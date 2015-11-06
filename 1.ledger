@@ -1,0 +1,60 @@
+; We are going to do some ledger experiments with
+; 3 currencies.  I will choose GBP, CAD, and JPY
+; because that's what I work with most of the time.
+
+; I will assume that you know the basics of how to
+; use ledger.  If anything is confusing, please
+; consult the documentation.  Also, I haven't used
+; ledger in a while, so there is a possibility that
+; I will make a mistake.  Always trust your own
+; eyes ;-)
+
+; Price Lines and Equity
+; ======================
+
+; The Price lines set the exchange rate of a commodity.
+; Let's start with some simple exchange rates (not
+; accurate in real life, but easy for us to do math with).
+; The first thing you need to do is to pick the currency
+; that you will most often be reporting in.  I'm going
+; to pick JPY because I live in Japan.
+
+P 2015/01/01 CAD 100 JPY
+P 2015/01/01 GBP 200 JPY
+
+; Now, let's set an opening balance for each of our commodities.
+; I'm going to set each to the equivalent of 1000 JPY so that
+; it is easy to see what is happening
+
+2015/01/01 Opening CAD Balance
+  Assets:CAD      10.00 CAD
+  Equity:CAD
+
+2015/01/01 Opening GBP Balance
+  Assets:GBP       5.00 GBP
+  Equity:GBP
+
+2015/01/01 Opening JPY Balance
+  Assets:JPY       1000 JPY
+  Equity:JPY
+
+; Try some reports:
+;   ledger -f 1.ledger bal
+;   ledger -f 1.ledger bal -X CAD
+;   ledger -f 1.ledger bal -X GBP
+;   ledger -f 1.ledger bal -X JPY
+;
+; Notice that the accounts balance and that the conversion
+; is correct in each case.
+
+; We are going to talk about lot prices later, but just
+; so you have some idea of how lot prices work, try
+; a balance report with lot prices:
+;  ledger -f 1.ledger --lot-prices bal
+
+; The important thing to take away here is that it outputs
+; exactly the same thing as if you didn't specify --lot-prices
+; because these opening balances do not have lot prices.
+
+; Please move on to the file 2.ledger, where we will
+; examine the impact of adding another price line.

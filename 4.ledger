@@ -1,0 +1,75 @@
+; Selling Commodities and Realizing Gains
+; =======================================
+
+; Sometimes you want to sell a commodity and
+; realize your gains.  Normally, you need to
+; declare capital gains in your taxes, so it
+; is pretty important to capture them.
+
+; Here are the price lines we set originally
+
+P 2015/01/01 CAD 100 JPY
+P 2015/01/01 GBP 200 JPY
+
+; Here are the assets that we started with
+
+2015/01/01 Opening CAD Balance
+  Assets:CAD      10.00 CAD @ 100 JPY
+  Equity:CAD
+
+2015/01/01 Opening GBP Balance
+  Assets:GBP       5.00 GBP @ 200 JPY
+  Equity:GBP
+
+2015/01/01 Opening JPY Balance
+  Assets:JPY       1000 JPY
+  Equity:JPY
+
+; GBP has gone up quite a bit.  We can probably buy
+; some daifuku (a type of Japanese sweets) with the
+; profits from selling our GBP, so let's do it!
+
+; Ledger automatically sets the price of commodities
+; based on the price you last bought/sold them.  If you
+; have to buy or sell something at a price other than the
+; exchange rate, you will need to move the P lines
+; after that transaction (or duplicate them).
+
+2015/01/02 Sell GBP and realize sweet profit
+  Assets:GBP                   -2.00 GBP {200 JPY} @ 240 JPY
+  Assets:JPY                     480 JPY
+  ; I have to pay the exchange commission in GBP, but tax
+  ; law in Japan forces me to claim the expense at the
+  ; buy price, not the sell price.  Your country may do it
+  ; differently.
+  Assets:GBP                   -0.10 GBP {200 JPY} @ 200 JPY
+  Expenses:Commissions            20 JPY
+  Income:Capital Gains
+
+; In this example, I have paid the exchange commission in GBP.
+; Remember that you *must* always specify lot from which you
+; spend the GBP.  Which lot you choose depends on how you
+; are calculating capital gains (either LIFO or FIFO).  Since
+; we only have one lot, the choice is easy.
+
+; Important note: If you are calculating capital gains using
+; average cost, you must do this very differently.  I will
+; provide an example later.
+
+; We've moved the prices here since we sold the commission
+; expense at the buy price rather than the sell price.
+
+P 2015/01/02 CAD 110 JPY
+P 2015/01/02 GBP 240 JPY
+
+; Here are some interesting reports you can do:
+;  ledger -f 4.ledger --lot-prices bal
+;  ledger -f 4.ledger -X JPY bal
+;  ledger -f 4.ledger -X GBP bal
+;  ledger -f 4.ledger --cost -X JPY bal
+;  ledger -f 4.ledger --cost -X GBP bal
+
+; Probably the only thing interesting here is that we have
+; Realized 80 JPY of our profit, so the balance report
+; only shows an unrealized profit of 220 JPY rather than
+; 300 JPY

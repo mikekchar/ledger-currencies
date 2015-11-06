@@ -1,0 +1,40 @@
+; More Price Lines and Equity
+; ===========================
+
+; Here are the price lines we set originally
+
+P 2015/01/01 CAD 100 JPY
+P 2015/01/01 GBP 200 JPY
+
+; And here are the opening balances
+
+2015/01/01 Opening CAD Balance
+  Assets:CAD      10.00 CAD
+  Equity:CAD
+
+2015/01/01 Opening GBP Balance
+  Assets:GBP       5.00 GBP
+  Equity:GBP
+
+2015/01/01 Opening JPY Balance
+  Assets:JPY       1000 JPY
+  Equity:JPY
+
+; Now we're going to update the prices to
+; see what it does with our report.
+
+P 2015/01/02 CAD 110 JPY
+P 2015/01/02 GBP 240 JPY
+
+; Try the same reports again. Remember to change
+; the filename to 2.ledger:
+;   ledger -f 2.ledger bal
+;   ledger -f 2.ledger bal -X CAD
+;   ledger -f 2.ledger bal -X GBP
+;   ledger -f 2.ledger bal -X JPY
+;
+; Notice that the accounts balance and that the conversion
+; is correct in each case.  So no problem so far.
+
+; Please open 3.ledger where we notice something strange about
+; lot prices.

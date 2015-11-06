@@ -1,0 +1,152 @@
+; Lot Prices, Unrealized Gains and Cost Basis
+; ===========================================
+
+; We haven't talked much about lot prices.  Each
+; time you buy a commodity, it has a price.  Usually
+; the price is different each time you buy it.  When
+; you are calculating capital gains, you need to be
+; able to keep track of the lot price so that when you
+; sell the asset you can determine how much you
+; lost or gained.
+
+; Here are the price lines we set originally
+
+P 2015/01/01 CAD 100 JPY
+P 2015/01/01 GBP 200 JPY
+
+; Remember in 1.ledger, we discovered that just setting
+; the P line does not set the lot price for a commodity.
+; Since we know the conversion rate at the beginning
+; of this reporting period, we can set the lot prices.
+; In reality, what you set the lot prices to (if you
+; even do) is highly dependent on what your trying to
+; do.
+
+2015/01/01 Opening CAD Balance
+  Assets:CAD      10.00 CAD @ 100 JPY
+  Equity:CAD
+
+2015/01/01 Opening GBP Balance
+  Assets:GBP       5.00 GBP @ 200 JPY
+  Equity:GBP
+
+; This is already in JPY so we don't have to do anything
+; Note that it is important to always have a single commodity
+; without a lot price.  This is the commodity that everything
+; else will be compared against.  You can always use -X to
+; calculate your reports in any currency.
+2015/01/01 Opening JPY Balance
+  Assets:JPY       1000 JPY
+  Equity:JPY
+
+; Now we're going to update the prices to
+; see what it does with our report.
+
+P 2015/01/02 CAD 110 JPY
+P 2015/01/02 GBP 240 JPY
+
+; Let's try the --lot-prices option to see our lot prices:
+;  ledger -f 3.ledger --lot-prices bal
+
+; You can see the lot prices denoted by {100 JPY} for
+; example.
+;
+; Now compare this output to:
+;  ledger -f 2.ledger --lot-prices bal
+;
+; Notice how the balances for 2.ledger come to zero,
+; but the balances for 3.ledger show commodities with
+; lot prices.  However, we shouldn't get too worried.
+
+; Output:
+;    10.00 CAD {100 JPY}
+;     5.00 GBP {200 JPY}
+;               1000 JPY  Assets
+;    10.00 CAD {100 JPY}    CAD
+;     5.00 GBP {200 JPY}    GBP
+;               1000 JPY    JPY
+;              -3000 JPY  Equity
+;              -1000 JPY    CAD
+;              -1000 JPY    GBP
+;              -1000 JPY    JPY
+;   --------------------
+;    10.00 CAD {100 JPY}
+;     5.00 GBP {200 JPY}
+;              -2000 JPY
+
+; Does this balance?  We can add up the
+; values of the things at the end.
+
+; 10.00 CAD * 100 JPY / CAD = 1000 JPY
+;  5.00 GBP * 200 JPY / CAD = 1000 JPY
+; 2000 JPY - 2000 JPY = 0
+
+; So it balances perfectly.
+
+; Let run this report in JPY:
+;  ledger -f 2.ledger -X JPY bal
+
+; Wait... That doesn't seem right.  It doesn't balance!
+; There is a balance of 300 JPY left over.  Why?
+
+; This is a fundamental issue that you need to understand.
+; The price for CAD and the price for GBP went up against
+; JPY.  Since we had more CAD and GBP than JPY, our total
+; value went up.  However, we did not have any account for
+; that increase in value to balance against.  Therefore
+; the report no longer balances.
+
+; What this means is that we have an unrealized gain of 300 JPY.
+; By why didn't the report with --lot-prices appear unbalanced?
+; That's because we calculated the amounts using their "cost price",
+; not their "current price".
+
+; The -X calculated all values in account *at their current
+; price*.  If the current price is not the cost price (i.e.,
+; the price at which we bought the commodity), then
+; we will *always* have an unbalanced report.  The part at
+; the bottom will always tell us what our unrealized gain/loss
+; is.
+
+; While knowing our unrealized gain/loss is very useful,
+; sometimes we just want to find out if the accounts balance
+; according to the cost prices.  You can do it by using
+; the --lot-prices switch and manually calculating it, but
+; that's a pain.  Instead you can use the --cost switch
+; to see the balance report using cost prices (also known
+; as the cost basis).
+
+; Let's run the reports using the --cost switch
+;  ledger -f 3.ledger --cost -X JPY bal
+;  ledger -f 3.ledger --cost -X CAD bal
+;  ledger -f 3.ledger --cost -X GBP bal
+
+; One last word on this.  Compare these 2
+;  ledger -f 3.ledger --cost -X CAD bal
+;  ledger -f 2.ledger --cost -X CAD bal
+
+; They produce very different amounts.  In 2.ledger
+; you have 30.00 CAD in assets, but in 3.ledger
+; you have 27.27 CAD in assets.  Neither of these is
+; wrong.  They just reflect different ways of measuring.
+
+; In 2.ledger, none of the currencies have cost prices, so
+; ledger always computes with the current price.
+; In 3.ledger, CAD and GBP have cost prices and we are
+; calculating based on the cost price.
+; Now run:
+;  ledger -f 3.ledger -X CAD bal
+
+; Notice that the unrealized gain is 2.73 CAD -- exactly
+; equal to the difference between 2.ledger and 3.ledger.
+
+; So the moral of the story is:
+;   If you want to track captical gain, you have to set lot prices
+;   If you set lot prices, the -X report will have a
+;     balance indicating your unrealized gain in assets
+;   You can use the --cost report to check the balance without
+;     unrealized gains
+;   The difference in assets between using --cost and not will
+;     be exactly equal to the unrealized gains in your assets.
+
+; Please see 4.ledger to see how to realize your gains.
