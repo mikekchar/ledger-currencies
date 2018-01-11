@@ -84,7 +84,7 @@ P 2015/01/02 GBP 240 JPY
 ; So it balances perfectly.
 
 ; Let run this report in JPY:
-;  ledger -f 2.ledger -X JPY bal
+;  ledger -f 3.ledger -X JPY bal
 
 ; Wait... That doesn't seem right.  It doesn't balance!
 ; There is a balance of 300 JPY left over.  Why?
