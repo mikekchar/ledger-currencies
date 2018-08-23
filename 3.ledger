@@ -141,7 +141,7 @@ P 2015/01/02 GBP 240 JPY
 ; equal to the difference between 2.ledger and 3.ledger.
 
 ; So the moral of the story is:
-;   If you want to track captical gain, you have to set lot prices
+;   If you want to track capital gain, you have to set lot prices
 ;   If you set lot prices, the -X report will have a
 ;     balance indicating your unrealized gain in assets
 ;   You can use the --cost report to check the balance without
